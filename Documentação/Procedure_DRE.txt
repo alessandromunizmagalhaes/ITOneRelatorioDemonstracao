@@ -1,0 +1,559 @@
+USE [ITONE_PRD]
+GO
+/****** Object:  StoredProcedure [dbo].[UPD_ORCAMENTO_DRE]    Script Date: 26/12/2017 09:27:32 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--[UPD_ORCAMENTO_DRE] 2017,1
+ALTER PROCEDURE [dbo].[UPD_ORCAMENTO_DRE]
+@ANO VARCHAR(4),
+@MES INT
+AS
+DECLARE @P1 datetime2,@P2 datetime2,@P3 nvarchar(254),@P4 nvarchar(254),@P5 nvarchar(254),@P6 nvarchar(254),@P7 nvarchar(254),@P8 nvarchar(254)
+--Declare @mes int = 9
+IF @MES = 1 
+BEGIN
+	SET @P1 = @ANO+'-01-01 00:00:00'
+	SET @P2 = @ANO+'-01-31 00:00:00'
+END 
+ELSE IF @MES = 2
+BEGIN
+	SET @P1 =@ANO+'-02-01 00:00:00'
+	SET @P2 =@ANO+'-02-28 00:00:00'
+END 
+ELSE IF @MES = 3
+BEGIN
+	SET @P1 =@ANO+'-03-01 00:00:00'
+	SET @P2 =@ANO+'-03-31 00:00:00'
+END 
+ELSE IF @MES = 4
+BEGIN
+	SET @P1 =@ANO+'-04-01 00:00:00'
+	SET @P2 =@ANO+'-04-30 00:00:00'
+END 
+ELSE IF @MES = 5
+BEGIN
+	SET @P1 =@ANO+'-05-01 00:00:00'
+	SET @P2 =@ANO+'-05-31 00:00:00'
+END 
+ELSE IF @MES = 6
+BEGIN
+	SET @P1 =@ANO+'-06-01 00:00:00'
+	SET @P2 =@ANO+'-06-30 00:00:00'
+END 
+ELSE IF @MES = 7
+BEGIN
+	SET @P1 =@ANO+'-07-01 00:00:00'
+	SET @P2 =@ANO+'-07-31 00:00:00'
+END 
+ELSE IF @MES = 8
+BEGIN
+	SET @P1 =@ANO+'-08-01 00:00:00'
+	SET @P2 =@ANO+'-08-31 00:00:00'
+END 
+ELSE IF @MES = 9
+BEGIN
+	SET @P1 =@ANO+'-09-01 00:00:00'
+	SET @P2 =@ANO+'-09-30 00:00:00'
+END 
+ELSE IF @MES = 10
+BEGIN
+	SET @P1 =@ANO+'-10-01 00:00:00'
+	SET @P2 =@ANO+'-10-31 00:00:00'
+END 
+ELSE IF @MES = 11
+BEGIN
+	SET @P1 =@ANO+'-11-01 00:00:00'
+	SET @P2 =@ANO+'-11-30 00:00:00'
+END 
+ELSE IF @MES = 12
+BEGIN
+	SET @P1 =@ANO+'-12-01 00:00:00'
+	SET @P2 =@ANO+'-12-31 00:00:00'
+END
+ SET @P3 ='V'
+ SET @P4 ='42'
+ SET @P5 ='140'
+ SET @P6 ='123'
+ SET @P7 ='29'
+ SET @P8 ='157'
+
+SELECT 
+MONTH(@P1)Mes,
+DatePart(QUARTER,(@P1))'Trimestre',
+ T0.[CatId],
+ T0.[TemplateId] , 
+ T0.[Name] , 
+ T1.[AcctCode],
+ T0.[Levels] , 
+ T0.[FatherNum] , 
+ T0.[Active] , T0.[HasSons] , T0.[VisOrder] , T0.[SubSum] , T0.[SubName] , T0.[Furmula] , T0.[Param_1] , T0.[Param_2] , T0.[Param_3] , T0.[Param_4] , T0.[Param_5] , T0.[Param_6] , T0.[Param_7] , T0.[Param_8] , T0.[Param_9] , T0.[Param_10] , T0.[Param_11] , T0.[Param_12] , T0.[Param_13] , T0.[Param_14] , T0.[Param_15] , T0.[Param_16] , T0.[Param_17] , T0.[Param_18] , T0.[Param_19] , T0.[Param_20] , T0.[Param_21] , T0.[Param_22] , T0.[Param_23] , T0.[Param_24] , T0.[Param_25] , T0.[OP_1] , T0.[OP_2] , T0.[OP_3] , T0.[OP_4] , T0.[OP_5] , T0.[OP_6] , T0.[OP_7] , T0.[OP_8] , T0.[OP_9] , T0.[OP_10] , T0.[OP_11] , T0.[OP_12] , T0.[OP_13] , T0.[OP_14] , T0.[OP_15] , T0.[OP_16] , T0.[OP_17] , T0.[OP_18] , T0.[OP_19] , T0.[OP_20] , T0.[OP_21] , T0.[OP_22] , T0.[OP_23] , T0.[OP_24] , T0.[ProfitLoss] , T0.[MoveNeg] , T0.[Dummy] , T0.[HideAct] , T0.[UserSign] , T0.[ToGroup] , T0.[ToTitle] , T0.[LineNum] , T0.[IndentChar] , T0.[Reversal] , T0.[TextTitle] , T0.[SumType] , T0.[NetIncome] , T0.[PLTempId] , T0.[CustName] , T0.[ExtFromBS] , T0.[ExtData] , T0.[LegalRef] , T0.[PLCatId] , T0.[SignAggr] , T0.[Mandatory] , T0.[AcctReq] , T0.[NotPermit] , T0.[KPIFactor] , T0.[CatCode] , T0.[CatClass]  
+INTO #TEMPLATE
+FROM [dbo].[OFRC] T0 
+LEFT JOIN [dbo].[FRC1]T1 ON T0.TemplateId = T1.TemplateId AND T0.CatId = T1.CatId
+WHERE T0.[TemplateId] = (@P4)  
+ORDER BY T0.[VisOrder]
+----------------------------------------------------------------------------------------------------------------------------
+-------------------------------------TEMPLATE DE ORÇAMENTO-----------------------------------------------------------------
+SELECT 
+	MONTH(@MES)'Mes',
+	DatePart(QUARTER,(@P1))'Trimestre',
+	T2.AbsId,
+	T2.[IsMain],
+	T2.Name,
+	YEAR(T2.FinancYear) As [YEAR],
+	T1.BgdCode,
+	T1.AcctCode, 
+	T4.AcctName,	
+	Isnull(T2.OcrCode,'')OcrCode, 
+	Isnull(T2.Name,'')PrcName,
+	(SELECT DebLTotal FROM BGT1 WHERE AcctCode=T1.AcctCode AND Line_ID = 0 and Instance = T2.BaseId) as Programado,
+	--[UPD_ORCAMENTO_DRE] 2017,1
+	CASE 
+		WHEN @MES = 1 and Left(T1.AcctCode,1) in ('5') THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) ,0.00)
+		WHEN @MES = 1 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 1 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		
+		WHEN @MES = 2 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 2 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 2 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 3 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 3 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 3 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 4 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 4 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 4 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 5 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 5 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 5 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 6 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 6 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 6 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 7 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 7 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 7 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 8 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 8 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 8 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 9 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 9 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 9 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 10 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 10 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 10 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 11 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 11 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 11 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 12 and Left(T1.AcctCode,1) in ('5') THEN	(Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+		WHEN @MES = 12 and T1.AcctCode in ('3.1.3.02.001') THEN	ISNULL((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode),0.00) 
+		WHEN @MES = 12 and Left(T1.AcctCode,1) not in('5') AND T1.AcctCode NOT in ('3.1.3.02.001')  THEN	(Select case when (DebLTotal - CredLTotal) < 0 THEN (DebLTotal - CredLTotal) * -1 ELSE (DebLTotal - CredLTotal)END from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode) 
+	END as ProgramadoMes,
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.03.004'),0)
+	END 'Programado_Mes_Prolabore',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.03.004'),0)
+	END 'Programado_Mes_Prolabore_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.03.041'),0)
+	END 'Programado_Mes_Comissao',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.03.041'),0)
+	END 'Programado_Mes_Comissao_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.03.042'),0)
+	END 'Programado_Mes_ComissaoAcelerador',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.03.042'),0)
+	END 'Programado_Mes_ComissaoAcelerador_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.04.014'),0)
+	END 'Programado_Mes_EncargosDepreciacao',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.04.014'),0)
+	END 'Programado_Mes_EncargosDepreciacao_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.04.027'),0)
+	END 'Programado_Mes_EncargosAmortizacao',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.04.027'),0)
+	END 'Programado_Mes_EncargosAmortizacao_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.05.015'),0)
+	END 'Programado_Mes_ServicosPrestadosPJ_Comissao',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '5.4.2.05.015'),0)
+	END 'Programado_Mes_ServicosPrestadosPJ_Comissao_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.2.01.004'),0)
+	END 'Programado_Mes_Prolabore_grupo4',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.2.01.004'),0)
+	END 'Programado_Mes_Prolabore_grupo4_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.2.01.041'),0)
+	END 'Programado_Mes_Comissao_grupo4',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.2.01.041'),0)
+	END 'Programado_Mes_Comissao_grupo4_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.2.01.042'),0)
+	END 'Programado_Mes_ComissaoAcelerador_grupo4',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select Sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.2.01.042'),0)
+	END 'Programado_Mes_ComissaoAcelerador_grupo4_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.01.014'),0)
+	END 'Programado_Mes_EncargosDepreciacao_grupo4',
+		CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.01.014'),0)
+	END 'Programado_Mes_EncargosDepreciacao_grupo4_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.01.027'),0)
+	END 'Programado_Mes_EncargosAmortizacao_grupo4',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.01.027'),0)
+	END 'Programado_Mes_EncargosAmortizacao_grupo4_ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.02.015'),0)
+	END 'Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.02.015'),0)
+	END 'Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4_Ano',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select (DebLTotal - CredLTotal) from BGT1 where Line_ID = @MES - 1 AND Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.02.016'),0)
+	END 'Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4',
+	CASE
+		WHEN @MES in(1,2,3,4,5,6,7,8,9,10,11,12) THEN	isnull((Select Sum(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode and AcctCode = '4.2.3.02.016'),0)
+	END 'Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4_ano',
+	ISNULL((Select SUM(DebLTotal - CredLTotal) from BGT1 where Instance = 16 AND AcctCode = T1.AcctCode),0.00) ProgramadoAno,
+
+		(Select Month1 from OBGD where BgdCode = T1.BgdCode) Month1,
+		(Select Month2 from OBGD where BgdCode = T1.BgdCode) Month2,
+		(Select Month3 from OBGD where BgdCode = T1.BgdCode) Month3,
+		(Select Month4 from OBGD where BgdCode = T1.BgdCode) Month4,
+		(Select Month5 from OBGD where BgdCode = T1.BgdCode) Month5,
+		(Select Month6 from OBGD where BgdCode = T1.BgdCode) Month6,
+		(Select Month7 from OBGD where BgdCode = T1.BgdCode) Month7,
+		(Select Month8 from OBGD where BgdCode = T1.BgdCode) Month8,
+		(Select Month9 from OBGD where BgdCode = T1.BgdCode) Month9,
+		(Select Month10 from OBGD where BgdCode = T1.BgdCode) Month10,
+		(Select Month11 from OBGD where BgdCode = T1.BgdCode) Month11,
+		(Select Month12 from OBGD where BgdCode = T1.BgdCode) Month12,
+
+		ISNULL((SELECT SUM(TB1.Debit )- SUM(TB1.Credit)FROM OJDT TB0
+		 INNER JOIN JDT1 TB1 ON TB0.TransId = TB1.TransId
+		 WHERE TB1.Account = T1.AcctCode AND YEAR(TB0.RefDate) = @ANO AND MONTH(TB0.RefDate) = @MES),0.0000) Executado
+
+		,ISNULL((SELECT SUM(TB1.Debit )- SUM(TB1.Credit) FROM [SBO_ICX]..OJDT TB0
+		 INNER JOIN [SBO_ICX]..JDT1 TB1 ON TB0.TransId = TB1.TransId
+		 WHERE TB1.Account = T1.AcctCode AND YEAR(TB0.RefDate) = @ANO AND MONTH(TB0.RefDate) = @MES),0.0000) ExecutadoICX
+
+		,ISNULL((SELECT SUM(TB1.Debit )- SUM(TB1.Credit) FROM [IT_PS_PRD]..OJDT TB0
+		 INNER JOIN [IT_PS_PRD]..JDT1 TB1 ON TB0.TransId = TB1.TransId
+		 WHERE TB1.Account = T1.AcctCode AND YEAR(TB0.RefDate) = @ANO AND MONTH(TB0.RefDate) = @MES),0.0000) ExecutadoITPS 
+
+		 ,ISNULL((SELECT SUM(TB1.Debit )- SUM(TB1.Credit) FROM OJDT TB0
+		 INNER JOIN JDT1 TB1 ON TB0.TransId = TB1.TransId
+		 WHERE TB1.Account = T1.AcctCode AND YEAR(TB0.RefDate) = @ANO AND MONTH(TB0.RefDate) = @MES - 1),0.0000) ExecutadoMesAnterior
+
+		,ISNULL((SELECT SUM(TB1.Debit )- SUM(TB1.Credit) FROM [SBO_ICX]..OJDT TB0
+		 INNER JOIN [SBO_ICX]..JDT1 TB1 ON TB0.TransId = TB1.TransId
+		 WHERE TB1.Account = T1.AcctCode AND YEAR(TB0.RefDate) = @ANO AND MONTH(TB0.RefDate) = @MES - 1),0.0000) ExecutadoICXMesAnterior
+
+		,ISNULL((SELECT SUM(TB1.Debit )- SUM(TB1.Credit) FROM [IT_PS_PRD]..OJDT TB0
+		 INNER JOIN [IT_PS_PRD]..JDT1 TB1 ON TB0.TransId = TB1.TransId
+		 WHERE TB1.Account = T1.AcctCode AND YEAR(TB0.RefDate) = @ANO AND MONTH(TB0.RefDate) = @MES - 1),0.0000) ExecutadoITPSMesAnterior
+
+INTO #TEMPLATEORCAMENTO
+
+	FROM OBGT T1
+	INNER JOIN OBGS T2 ON T1.Instance=t2.BaseId AND T2.Locked = 'Y'
+	LEFT JOIN BGT1 T22 ON T1.BgdCode = T22.BudgId 
+	LEFT JOIN BGT2 T3 ON T1.AbsId=T3.BudgId AND T3.DimCode=1
+	LEFT JOIN OACT T4 ON T4.AcctCode=T1.AcctCode
+	LEFT JOIN OPRC T5 ON T5.PrcCode=T3.OcrCode
+	WHERE YEAR(T2.FinancYear)=@ANO and isnull(T22.Line_ID,@MES - 1) = @MES - 1
+	--AND (SELECT DebLTotal FROM BGT1 WHERE AcctCode=T1.AcctCode AND Line_ID = 0 and Instance = T2.BaseId)>0
+	GROUP BY T2.AbsId,T2.[IsMain], T2.Name, YEAR(T2.FinancYear),T22.AcctCode
+		   ,T1.AcctCode,T3.OcrCode, T4.AcctName, T5.PrcName
+		   ,ISNULL(T3.CredSTotal, T1.CredSTotal) - ISNULL(T3.DebSTotal, T1.DebSTotal), T1.BgdCode,T2.OcrCode,T22.Line_ID,T22.Instance,T2.BaseId
+	order by T1.AcctCode
+-------------------------------------TEMPLATE DE ORÇAMENTO-----------------------------------------------------------------
+SELECT 
+Tb0.Mes,
+Tb0.Trimestre,
+TB0.[CatId] , 
+TB0.[TemplateId] , 
+TB0.IndentChar,
+TB0.[Name], 
+--ISNULL(TB0.AcctCode,'')AcctCode,
+TB0.[Levels] , 
+TB0.[FatherNum] , 
+TB0.[Active] , 
+TB0.[HasSons] , 
+TB0.[VisOrder] , 
+TB0.[SubSum] , 
+TB0.[Furmula] , 
+--[UPD_ORCAMENTO_DRE] 2017,1
+ISNULL(SUM(TB1.Programado_Mes_Prolabore),0.00)Programado_Mes_Prolabore,
+ISNULL(SUM(TB1.Programado_Mes_Comissao),0.00)Programado_Mes_Comissao,
+ISNULL(SUM(TB1.Programado_Mes_ComissaoAcelerador),0.00)Programado_Mes_ComissaoAcelerador,
+ISNULL(SUM(TB1.Programado_Mes_EncargosDepreciacao),0.00)Programado_Mes_EncargosDepreciacao,
+ISNULL(SUM(TB1.Programado_Mes_EncargosAmortizacao),0.00)Programado_Mes_EncargosAmortizacao,
+ISNULL(SUM(TB1.Programado_Mes_ServicosPrestadosPJ_Comissao),0.00)Programado_Mes_ServicosPrestadosPJ_Comissao,
+ISNULL(SUM(TB1.Programado_Mes_Prolabore_grupo4),0.00)Programado_Mes_Prolabore_grupo4,
+ISNULL(SUM(TB1.Programado_Mes_Comissao_grupo4),0.00)Programado_Mes_Comissao_grupo4,
+ISNULL(SUM(TB1.Programado_Mes_ComissaoAcelerador_grupo4),0.00)Programado_Mes_ComissaoAcelerador_grupo4,
+ISNULL(SUM(TB1.Programado_Mes_EncargosDepreciacao_grupo4),0.00)Programado_Mes_EncargosDepreciacao_grupo4,
+ISNULL(SUM(TB1.Programado_Mes_EncargosAmortizacao_grupo4),0.00)Programado_Mes_EncargosAmortizacao_grupo4,
+ISNULL(SUM(TB1.Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4),0.00)Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4,
+ISNULL(SUM(TB1.Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4),0.00)Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4,
+--------------------
+ISNULL(SUM(TB1.Programado_Mes_Prolabore_ano),0.00)Programado_Mes_Prolabore_ano,
+ISNULL(SUM(TB1.Programado_Mes_Comissao_ano),0.00)Programado_Mes_Comissao_ano,
+ISNULL(SUM(TB1.Programado_Mes_ComissaoAcelerador_ano),0.00)Programado_Mes_ComissaoAcelerador_ano,
+ISNULL(SUM(TB1.Programado_Mes_EncargosDepreciacao_ano),0.00)Programado_Mes_EncargosDepreciacao_ano,
+ISNULL(SUM(TB1.Programado_Mes_EncargosAmortizacao_ano),0.00)Programado_Mes_EncargosAmortizacao_ano,
+ISNULL(SUM(TB1.Programado_Mes_ServicosPrestadosPJ_Comissao_ano),0.00)Programado_Mes_ServicosPrestadosPJ_Comissao_ano,
+ISNULL(SUM(TB1.Programado_Mes_Prolabore_grupo4_ano),0.00)Programado_Mes_Prolabore_grupo4_ano,
+ISNULL(SUM(TB1.Programado_Mes_Comissao_grupo4_ano),0.00)Programado_Mes_Comissao_grupo4_ano,
+ISNULL(SUM(TB1.Programado_Mes_ComissaoAcelerador_grupo4_ano),0.00)Programado_Mes_ComissaoAcelerador_grupo4_ano,
+ISNULL(SUM(TB1.Programado_Mes_EncargosDepreciacao_grupo4_ano),0.00)Programado_Mes_EncargosDepreciacao_grupo4_ano,
+ISNULL(SUM(TB1.Programado_Mes_EncargosAmortizacao_grupo4_ano),0.00)Programado_Mes_EncargosAmortizacao_grupo4_ano,
+ISNULL(SUM(TB1.Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4_ano),0.00)Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4_ano,
+ISNULL(SUM(TB1.Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4_ano),0.00)Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4_ano,
+
+--------------------
+
+--case when TB0.AcctCode in('3.1.3.02.001') then ISNULL(SUM(TB1.ProgramadoMes),0.00) * -1 Else ISNULL(SUM(TB1.ProgramadoMes),0.00) End ProgramadoMes,
+ISNULL(SUM(TB1.ProgramadoMes),0.00) ProgramadoMes,
+--ISNULL((select Sum(ProgramadoMes) * -1 from #TEMPLATEORCAMENTO where AcctCode = TB0.AcctCode and AcctCode in('3.1.3.02.001')),(select Sum(ProgramadoMes) * -1 from #TEMPLATEORCAMENTO where AcctCode = TB0.AcctCode and AcctCode not in('3.1.3.02.001'))) ProgramadoMes,
+--[UPD_ORCAMENTO_DRE] 2017,1
+ISNULL(SUM(TB1.ProgramadoAno),0.00)ProgramadoAno,
+ISNULL(SUM(TB1.Month1),0.0000)'1O',
+ISNULL(SUM(TB1.Month2),0.0000)'2O',
+ISNULL(SUM(TB1.Month3),0.0000)'3O',
+ISNULL(SUM(TB1.Month4),0.0000)'4O',
+ISNULL(SUM(TB1.Month5),0.0000)'5O',
+ISNULL(SUM(TB1.Month6),0.0000)'6O',
+ISNULL(SUM(TB1.Month7),0.0000)'7O',
+ISNULL(SUM(TB1.Month8),0.0000)'8O',
+ISNULL(SUM(TB1.Month9),0.0000)'9O',
+ISNULL(SUM(TB1.Month10),0.0000)'10O',
+ISNULL(SUM(TB1.Month11),0.0000)'11O',
+ISNULL(SUM(TB1.Month12),0.0000)'12O',
+isnull(
+(SELECT 
+	SUM(TBB0.[Credit]) - SUM(TBB0.[Debit])
+	FROM  [dbo].[JDT1] TBB0  
+	WHERE TBB0.[RefDate] >= (@P1)  AND  TBB0.[RefDate] <= (@P2)  
+	AND  TBB0.[TransType] <> (@P3)  
+	AND TBB0.Account IN (SELECT TB01.AcctCode	
+				FROM OFRC TB00
+				INNER JOIN FRC1	TB01 ON TB00.TemplateId = TB01.TemplateId and TB00.catId = TB01.CatId	
+				WHERE TB00.TemplateId = @P4 AND TB00.CatId = Tb0.[CatId])											
+ ),0.000)ExecutadoItone,
+isnull(
+(SELECT 
+	SUM(TBB0.[Credit]) - SUM(TBB0.[Debit])
+	FROM  [SBO_ICX].[dbo].[JDT1] TBB0  
+	WHERE TBB0.[RefDate] >= (@P1)  AND  TBB0.[RefDate] <= (@P2)  
+	AND  TBB0.[TransType] <> (@P3)  
+	AND TBB0.Account IN (SELECT TB01.AcctCode	
+				FROM [dbo].OFRC TB00
+				INNER JOIN [dbo].FRC1	TB01 ON TB00.TemplateId = TB01.TemplateId and TB00.catId = TB01.CatId	
+				WHERE TB00.TemplateId = @P4 AND TB00.CatId = Tb0.[CatId])
+											
+ ), 0.0000 )ExecutadoICX,
+
+isnull(
+(SELECT 
+	SUM(TBB0.[Credit]) - SUM(TBB0.[Debit])
+	FROM  [IT_PS_PRD].[dbo].[JDT1] TBB0  
+	WHERE TBB0.[RefDate] >= (@P1)  AND  TBB0.[RefDate] <= (@P2)  
+	AND  TBB0.[TransType] <> (@P3)  
+	AND TBB0.Account IN (SELECT TB01.AcctCode	
+				FROM [dbo].OFRC TB00
+				INNER JOIN [dbo].FRC1	TB01 ON TB00.TemplateId = TB01.TemplateId and TB00.catId = TB01.CatId	
+				WHERE TB00.TemplateId = @P4 AND TB00.CatId = Tb0.[CatId])
+											
+ ),0.0000)ExecutadoITPS,
+ --------------------------------------------------------------------
+ isnull(
+(SELECT 
+	SUM(TBB0.[Credit]) - SUM(TBB0.[Debit])
+	FROM  [dbo].[JDT1] TBB0  
+	WHERE month(TBB0.[RefDate]) = Month (@p1) - 1 and year(TBB0.[RefDate]) = @ano 
+	AND  TBB0.[TransType] <> (@P3)  
+	AND TBB0.Account IN (SELECT TB01.AcctCode	
+				FROM OFRC TB00
+				INNER JOIN FRC1	TB01 ON TB00.TemplateId = TB01.TemplateId and TB00.catId = TB01.CatId	
+				WHERE TB00.TemplateId = @P4 AND TB00.CatId = Tb0.[CatId])
+											
+ ),0.00)ExecutadoItoneMesAnt,
+
+isnull(
+(SELECT 
+	SUM(TBB0.[Credit]) - SUM(TBB0.[Debit])
+	FROM  [SBO_ICX].[dbo].[JDT1] TBB0  
+	WHERE month(TBB0.[RefDate]) = Month (@p1) - 1 and year(TBB0.[RefDate]) = @ano  
+	AND  TBB0.[TransType] <> (@P3)  
+	AND TBB0.Account IN (SELECT TB01.AcctCode	
+				FROM [dbo].OFRC TB00
+				INNER JOIN [dbo].FRC1	TB01 ON TB00.TemplateId = TB01.TemplateId and TB00.catId = TB01.CatId	
+				WHERE TB00.TemplateId = @P4 AND TB00.CatId = Tb0.[CatId])
+											
+ ), 0.00)ExecutadoICXMesAnt,
+
+isnull(
+(SELECT 
+	SUM(TBB0.[Credit]) - SUM(TBB0.[Debit])
+	FROM  [IT_PS_PRD].[dbo].[JDT1] TBB0  
+	WHERE month(TBB0.[RefDate]) = Month (@p1) - 1 and year(TBB0.[RefDate]) = @ano 
+	AND  TBB0.[TransType] <> (@P3)  
+	AND TBB0.Account IN (SELECT TB01.AcctCode	
+				FROM [dbo].OFRC TB00
+				INNER JOIN [dbo].FRC1	TB01 ON TB00.TemplateId = TB01.TemplateId and TB00.catId = TB01.CatId	
+				WHERE TB00.TemplateId = @P4 AND TB00.CatId = Tb0.[CatId])
+											
+ ),0.00) ExecutadoITPSMesAnt,
+ --------------------------------------------------------------------
+cast(Sum(0.000000) AS FLOAT)'AV Empresas'
+
+INTO #DRE_FINAL
+ FROM #TEMPLATE TB0
+ LEFT JOIN #TEMPLATEORCAMENTO TB1 ON TB0.AcctCode = TB1.AcctCode
+ GROUP BY
+ Tb0.Mes,tb0.Trimestre,TB0.[CatId] , TB0.[TemplateId] , TB0.IndentChar,TB0.[Name],TB0.Levels,tB0.FatherNum,TB0.[Active] , 
+TB0.[HasSons] , TB0.[VisOrder] , TB0.[SubSum] , TB0.[Furmula]
+--TB1.Month1,TB1.Month2,TB1.Month3,TB1.Month4,TB1.Month5,TB1.Month6,TB1.Month7,TB1.Month8,TB1.Month9,TB1.Month10,TB1.Month11,TB1.Month12
+
+ order by TB0.VisOrder
+ 
+ --[UPD_ORCAMENTO_DRE] 2017,1
+
+SELECT 
+ Mes,
+ Trimestre,
+ CatId,
+ TemplateId,
+ IndentChar,
+ Name,
+ Levels,
+ FatherNum,
+ Active,
+ HasSons,
+ VisOrder,
+ SubSum,
+ isnull(Programado_Mes_Prolabore,0.00)Programado_Mes_Prolabore,
+ isnull(Programado_Mes_Comissao,0.00)Programado_Mes_Comissao,
+ isnull(Programado_Mes_ComissaoAcelerador,0.00)Programado_Mes_ComissaoAcelerador,
+ isnull(Programado_Mes_EncargosDepreciacao,0.00)Programado_Mes_EncargosDepreciacao,
+isnull(Programado_Mes_EncargosAmortizacao,0.00)Programado_Mes_EncargosAmortizacao,
+isnull(Programado_Mes_ServicosPrestadosPJ_Comissao,0.00)Programado_Mes_ServicosPrestadosPJ_Comissao,
+isnull(Programado_Mes_Prolabore_grupo4,0.00)Programado_Mes_Prolabore_grupo4,
+isnull(Programado_Mes_Comissao_grupo4,0.00)Programado_Mes_Comissao_grupo4,
+isnull(Programado_Mes_ComissaoAcelerador_grupo4,0.00)Programado_Mes_ComissaoAcelerador_grupo4,
+isnull(Programado_Mes_EncargosDepreciacao_grupo4,0.00)Programado_Mes_EncargosDepreciacao_grupo4,
+isnull(Programado_Mes_EncargosAmortizacao_grupo4,0.00)Programado_Mes_EncargosAmortizacao_grupo4,
+isnull(Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4,0.00)Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4,
+isnull(Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4,0.00)Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4,
+-----------------
+ isnull(Programado_Mes_Prolabore_ano,0.00)Programado_Mes_Prolabore_ano,
+ isnull(Programado_Mes_Comissao_ano,0.00)Programado_Mes_Comissao_ano,
+ isnull(Programado_Mes_ComissaoAcelerador_ano,0.00)Programado_Mes_ComissaoAcelerador_ano,
+ isnull(Programado_Mes_EncargosDepreciacao_ano,0.00)Programado_Mes_EncargosDepreciacao_ano,
+isnull(Programado_Mes_EncargosAmortizacao_ano,0.00)Programado_Mes_EncargosAmortizacao_ano,
+isnull(Programado_Mes_ServicosPrestadosPJ_Comissao_ano,0.00)Programado_Mes_ServicosPrestadosPJ_Comissao_ano,
+isnull(Programado_Mes_Prolabore_grupo4_ano,0.00)Programado_Mes_Prolabore_grupo4_ano,
+isnull(Programado_Mes_Comissao_grupo4_ano,0.00)Programado_Mes_Comissao_grupo4_ano,
+isnull(Programado_Mes_ComissaoAcelerador_grupo4_ano,0.00)Programado_Mes_ComissaoAcelerador_grupo4_ano,
+isnull(Programado_Mes_EncargosDepreciacao_grupo4_ano,0.00)Programado_Mes_EncargosDepreciacao_grupo4_ano,
+isnull(Programado_Mes_EncargosAmortizacao_grupo4_ano,0.00)Programado_Mes_EncargosAmortizacao_grupo4_ano,
+isnull(Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4_ano,0.00)Programado_Mes_ServicosPrestadosPJ_Comissao_grupo4_ano,
+isnull(Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4_ano,0.00)Programado_Mes_ServicosPrestadosPJ_ComissaoAcelerador_grupo4_ano,
+-----------------
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ProgramadoMes) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ProgramadoMes
+ end  ProgramadoMes,
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ProgramadoAno) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ProgramadoAno
+ end  ProgramadoAno,
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ExecutadoItone) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ExecutadoItone
+ end ExecutadoItone,
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ExecutadoItoneMesAnt) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ExecutadoItoneMesAnt
+ end ExecutadoItoneMesAnt,
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ExecutadoICX) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ExecutadoICX
+ end ExecutadoICX,
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ExecutadoICXMesAnt) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ExecutadoICXMesAnt
+ end ExecutadoICXMesAnt,
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ExecutadoITPS) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ExecutadoITPS
+ end ExecutadoITPS,
+ CASE
+	when Levels = 3 
+	then (select sum(TB0.ExecutadoITPSMesAnt) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE ExecutadoITPSMesAnt
+ end ExecutadoITPSMesAnt,
+ [AV Empresas],
+  CASE
+	when Levels = 3 
+	then (select	sum(
+						CASE
+							 when Mes = 12  Then TB0.[1O]
+							 when Mes = 11  Then TB0.[1O]+TB0.[2O]
+							 when Mes = 10  Then TB0.[1O]+TB0.[2O]+TB0.[3O]
+							 when Mes = 9  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]
+							 when Mes = 8  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]
+							 when Mes = 7  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]+TB0.[6O]
+							 when Mes = 6  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]+TB0.[6O]+TB0.[7O]
+							 when Mes = 5  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]+TB0.[6O]+TB0.[7O]+TB0.[8O]
+							 when Mes = 4  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]+TB0.[6O]+TB0.[7O]+TB0.[8O]+TB0.[9O]
+							 when Mes = 3  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]+TB0.[6O]+TB0.[7O]+TB0.[8O]+TB0.[9O]+TB0.[10O]
+							 when Mes = 2  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]+TB0.[6O]+TB0.[7O]+TB0.[8O]+TB0.[9O]+TB0.[10O]+TB0.[11O]
+							 when Mes = 1  Then TB0.[1O]+TB0.[2O]+TB0.[3O]+TB0.[4O]+TB0.[5O]+TB0.[6O]+TB0.[7O]+TB0.[8O]+TB0.[9O]+TB0.[10O]+TB0.[11O]+TB0.[12O]
+						 End 	
+						) from #DRE_FINAL TB0 where TB0.FatherNum = #DRE_FINAL.CatId AND TB0.Mes = Mes)
+ ELSE 
+						 CASE
+							 when Mes = 12  Then 0.0000
+							 when Mes = 11  Then #DRE_FINAL.[12O]
+							 when Mes = 10  Then #DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 9  Then #DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 8  Then #DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 7  Then #DRE_FINAL.[8O]+#DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 6  Then #DRE_FINAL.[7O]+#DRE_FINAL.[8O]+#DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 5  Then #DRE_FINAL.[6O]+#DRE_FINAL.[7O]+#DRE_FINAL.[8O]+#DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 4  Then #DRE_FINAL.[5O]+#DRE_FINAL.[6O]+#DRE_FINAL.[7O]+#DRE_FINAL.[8O]+#DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 3  Then #DRE_FINAL.[4O]+#DRE_FINAL.[5O]+#DRE_FINAL.[6O]+#DRE_FINAL.[7O]+#DRE_FINAL.[8O]+#DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 2  Then #DRE_FINAL.[3O]+#DRE_FINAL.[4O]+#DRE_FINAL.[5O]+#DRE_FINAL.[6O]+#DRE_FINAL.[7O]+#DRE_FINAL.[8O]+#DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+							 when Mes = 1  Then #DRE_FINAL.[2O]+#DRE_FINAL.[3O]+#DRE_FINAL.[4O]+#DRE_FINAL.[5O]+#DRE_FINAL.[6O]+#DRE_FINAL.[7O]+#DRE_FINAL.[8O]+#DRE_FINAL.[9O]+#DRE_FINAL.[10O]+#DRE_FINAL.[11O]+#DRE_FINAL.[12O]
+						 End 
+ end 'Relacao Orcado X Realizado Mes'
+ FROM #DRE_FINAL
+ 
+ DROP TABLE #DRE_FINAL
+ DROP TABLE #TEMPLATE
+ DROP TABLE #TEMPLATEORCAMENTO
+ --[UPD_ORCAMENTO_DRE] 2017,1
+ --UPD_DRE_GERAL
