@@ -30,13 +30,13 @@ namespace ITOneRelatorioDemonstracao
         int currentFormType = 0;
         int currentFormTypeCount = 0;
 
-        public static string ccustos;
-        public static string modelo;
-        public static string periodo;
-        public static string empresa;
-        public static string strDatainicial;
-        public static string strDataFinal;
-        public static string cenarios_orcamento;
+        public static string _ccustos;
+        public static string _modelo;
+        public static string _periodo;
+        public static Empresa _empresa;
+        public static string _strDatainicial;
+        public static string _strDataFinal;
+        public static string _cenarios_orcamento;
 
         #endregion
 
@@ -805,16 +805,16 @@ namespace ITOneRelatorioDemonstracao
                 oForm.Freeze(true);
                 SBOApplication.StatusBar.SetText("Buscando informações ... Aguarde...", SAPbouiCOM.BoMessageTime.bmt_Long, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
 
-                strDatainicial = oForm.Items.Item("edMesIni").Specific.value;
-                DateTime datainicial = Convert.ToDateTime(DateTime.ParseExact(strDatainicial, "yyyyMMdd", null).ToString("yyyy-MM-dd"));
+                _strDatainicial = oForm.Items.Item("edMesIni").Specific.value;
+                DateTime datainicial = Convert.ToDateTime(DateTime.ParseExact(_strDatainicial, "yyyyMMdd", null).ToString("yyyy-MM-dd"));
 
-                strDataFinal = oForm.Items.Item("edMesFim").Specific.value;
-                DateTime datafinal = Convert.ToDateTime(DateTime.ParseExact(strDataFinal, "yyyyMMdd", null).ToString("yyyy-MM-dd"));
+                _strDataFinal = oForm.Items.Item("edMesFim").Specific.value;
+                DateTime datafinal = Convert.ToDateTime(DateTime.ParseExact(_strDataFinal, "yyyyMMdd", null).ToString("yyyy-MM-dd"));
 
                 SAPbouiCOM.DataTable dt = oForm.DataSources.DataTables.Item("DT_RELDEMO");
                 dt.Clear();
 
-                ccustos = String.Join(",", ccustos_selecionados_ids.Select(x => "'" + x + "'"));
+                _ccustos = String.Join(",", ccustos_selecionados_ids.Select(x => "'" + x + "'"));
 
                 string sql =
                     $@"
@@ -836,7 +836,7 @@ namespace ITOneRelatorioDemonstracao
 	                    , FORMAT(0, 'N', 'pt-br') + '%'  as 'Variacao_em_perc_ano'
 
                     FROM [dbo].[OFRC] tb0 
-                    WHERE tb0.[TemplateId] = '{modelo}'      -- modelo financeiro		  
+                    WHERE tb0.[TemplateId] = '{_modelo}'      -- modelo financeiro		  
                     GROUP BY tb0.IndentChar, tb0.Name, tb0.VisOrder, tb0.CatId , tb0.FatherNum
                     ORDER BY tb0.[VisOrder]";
 
@@ -875,8 +875,8 @@ namespace ITOneRelatorioDemonstracao
                     grupo.TotalOrcadoMes = grupo.CalcularTotalOrcadoMes();
                     grupo.TotalOrcadoAno = grupo.CalcularTotalOrcadoAno();
 
-                    grupo.TotalRealizadoMes = grupo.CalcularRealizadoMes();
-                    grupo.TotalRealizadoAno = grupo.CalcularTotalRealizadoAno();
+                    grupo.TotalRealizadoMes = grupo.CalcularRealizadoMes(_empresa);
+                    grupo.TotalRealizadoAno = grupo.CalcularTotalRealizadoAno(_empresa);
 
                     grupo.VarMesReal = grupo.VariacaoEmReal(grupo.TotalOrcadoMes, grupo.TotalRealizadoMes);
                     grupo.VarAnoReal = grupo.VariacaoEmReal(grupo.TotalOrcadoAno, grupo.TotalRealizadoAno);
@@ -1004,21 +1004,22 @@ namespace ITOneRelatorioDemonstracao
             SAPbouiCOM.ComboBox oComboPeriodo = oForm.Items.Item("cmbPeriodo").Specific;
             SAPbouiCOM.ComboBox oComboEmpresa = oForm.Items.Item("cmbEmpresa").Specific;
 
-            modelo = oComboModelo.Value;
-            periodo = oComboPeriodo.Value;
-            empresa = oComboEmpresa.Value;
+            _modelo = oComboModelo.Value;
+            _periodo = oComboPeriodo.Value;
+            var empresa = oComboEmpresa.Value;
+            _empresa = empresa == "1" ? Empresa.ITOne : (empresa == "2" ? Empresa.ITPS : Empresa.Todas);
 
-            if (!String.IsNullOrEmpty(modelo) && ccustos_selecionados_ids.Count > 0 && !string.IsNullOrEmpty(periodo))
+            if (!String.IsNullOrEmpty(_modelo) && ccustos_selecionados_ids.Count > 0 && !string.IsNullOrEmpty(_periodo))
             {
-                cenarios_orcamento = "";
+                _cenarios_orcamento = "";
                 bool cenarios_ok = true;
                 for (int i = 0; i < ccustos_selecionados_ids.Count; i++)
                 {
                     string ccusto = ccustos_selecionados_ids[i];
-                    string cenario_orcamento = RetornaCenarioOrcamento(ccusto, periodo);
+                    string cenario_orcamento = RetornaCenarioOrcamento(ccusto, _periodo);
                     if (!String.IsNullOrEmpty(cenario_orcamento))
                     {
-                        cenarios_orcamento += "," + cenario_orcamento;
+                        _cenarios_orcamento += "," + cenario_orcamento;
                     }
                     else
                     {
@@ -1030,7 +1031,7 @@ namespace ITOneRelatorioDemonstracao
 
                 if (cenarios_ok)
                 {
-                    cenarios_orcamento = cenarios_orcamento.Remove(0, 1);
+                    _cenarios_orcamento = _cenarios_orcamento.Remove(0, 1);
                     __CarregaDatatableMatriz(pVal, oForm);
                 }
             }

@@ -40,13 +40,11 @@
                 TotalOrcadoMes = from.TotalOrcadoMes,
                 TotalRealizadoMes = from.TotalRealizadoMes,
                 VarMesReal = from.VarMesReal,
-                //VarMesPerc = from.VarMesPerc,
 
 
                 TotalOrcadoAno = from.TotalOrcadoAno,
                 TotalRealizadoAno = from.TotalRealizadoAno,
                 VarAnoReal = from.VarAnoReal,
-                //VarAnoPerc = from.VarAnoPerc,
 
                 VarMesPerc = ((GrupoContaFolha)from).VariacaoEmPercentual(from.TotalOrcadoMes, from.TotalRealizadoMes),
                 VarAnoPerc = ((GrupoContaFolha)from).VariacaoEmPercentual(from.TotalOrcadoAno, from.TotalRealizadoAno)
@@ -61,13 +59,11 @@
                 TotalOrcadoMes = grupoFilho.TotalOrcadoMes + grupoPai.TotalOrcadoMes,
                 TotalRealizadoMes = grupoFilho.TotalRealizadoMes + grupoPai.TotalRealizadoMes,
                 VarMesReal = grupoFilho.VarMesReal + grupoPai.VarMesReal,
-                //VarMesPerc = grupoFilho.VarMesPerc + grupoPai.VarMesPerc,
 
 
                 TotalOrcadoAno = grupoFilho.TotalOrcadoAno + grupoPai.TotalOrcadoAno,
                 TotalRealizadoAno = grupoFilho.TotalRealizadoAno + grupoPai.TotalRealizadoAno,
                 VarAnoReal = grupoFilho.VarAnoReal + grupoPai.VarAnoReal,
-                //VarAnoPerc = grupoFilho.VarAnoPerc + grupoPai.VarAnoPerc,
 
                 VarMesPerc = ((GrupoContaFolha)grupoPai).VariacaoEmPercentual(grupoFilho.TotalOrcadoMes + grupoPai.TotalOrcadoMes, grupoFilho.TotalRealizadoMes + grupoPai.TotalRealizadoMes),
                 VarAnoPerc = ((GrupoContaFolha)grupoPai).VariacaoEmPercentual(grupoFilho.TotalOrcadoAno + grupoPai.TotalOrcadoAno, grupoFilho.TotalRealizadoAno + grupoPai.TotalRealizadoAno)
