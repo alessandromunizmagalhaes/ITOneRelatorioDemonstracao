@@ -74,10 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Addon.cs" />
+    <Compile Include="AplicadorDeFormulas.cs" />
     <Compile Include="ConfigXML.cs" />
     <Compile Include="DataBaseFunctions.cs" />
     <Compile Include="Dialogs.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Formula.cs" />
     <Compile Include="GrupoConta.cs" />
     <Compile Include="GrupoContaFolha.cs" />
     <Compile Include="Program.cs" />

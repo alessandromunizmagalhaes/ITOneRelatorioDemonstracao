@@ -1,4 +1,5 @@
 ﻿using SAPbobsCOM;
+using SAPbouiCOM;
 
 namespace ITOneRelatorioDemonstracao
 {
@@ -130,25 +131,27 @@ namespace ITOneRelatorioDemonstracao
             return res;
         }
 
-        public double VariacaoEmReal(double totalOrcado, double totalRealizado)
+        public void OrganizarFormulas(DataTable dt, int row)
         {
-            if (totalRealizado < 0)
+            if (dt.GetValue("SubSum", row) == "N")
             {
-                return ((totalRealizado - totalOrcado) * -1);
+                return;
             }
-            else
+
+            for (int i = 1; i < Addon._quantidade_campos_contas_formula; i++)
             {
-                return totalOrcado - totalRealizado;
-            }
-        }
+                var catid_param = dt.GetValue(Addon._prefixo_campos_contas_formula + i, row);
+                if (catid_param == 0)
+                {
+                    continue;
+                }
 
-        public double VariacaoEmPercentual(double totalOrcado, double totalRealizado)
-        {
-            if (totalOrcado == 0)
-                return 0.0;
+                var str_operacao = dt.GetValue(Addon._prefixo_campos_operacao_formula + i, row);
+                var operacao = str_operacao == "+" ? TipoOperacao.Soma : (str_operacao == "-" ? TipoOperacao.Subtracao : TipoOperacao.Nenhuma);
 
-            var variacao = VariacaoEmReal(totalOrcado, totalRealizado);
-            return ((variacao * 100) / totalOrcado);
+                Formula formula = new Formula(catid_param, operacao);
+                Formulas.Add(formula);
+            };
         }
     }
 }

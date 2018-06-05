@@ -38,6 +38,14 @@ namespace ITOneRelatorioDemonstracao
         public static string _strDataFinal;
         public static string _cenarios_orcamento;
 
+        public static string _campos_contas_formula;
+        public const string _prefixo_campos_contas_formula = "Param_";
+        public const int _quantidade_campos_contas_formula = 25;
+
+        public static string _campos_operacao_formula;
+        public const string _prefixo_campos_operacao_formula = "OP_";
+        public const int _quantidade_campos_operacao_formula = 24;
+
         #endregion
 
 
@@ -72,6 +80,19 @@ namespace ITOneRelatorioDemonstracao
 
             CriaMenus();
             SetFilters();
+            IniciarCamposParaFormula();
+        }
+
+        private static void IniciarCamposParaFormula()
+        {
+            for (int i = 1; i <= _quantidade_campos_contas_formula; i++)
+            {
+                _campos_contas_formula += $",{_prefixo_campos_contas_formula}" + i;
+            }
+            for (int i = 1; i <= _quantidade_campos_operacao_formula; i++)
+            {
+                _campos_operacao_formula += $",{_prefixo_campos_operacao_formula}" + i;
+            }
         }
 
         private void SetApplication()
@@ -695,6 +716,7 @@ namespace ITOneRelatorioDemonstracao
                             SAPbouiCOM.Matrix mtx = oForm.Items.Item("mtxRel").Specific;
                             mtx.Columns.Item("catid").Visible = false;
                             mtx.Columns.Item("fathernum").Visible = false;
+                            mtx.Columns.Item("dummy").Visible = false;
 
                             mtx.AutoResizeColumns();
                         }
@@ -834,10 +856,13 @@ namespace ITOneRelatorioDemonstracao
 	                    , FORMAT(0, 'C', 'pt-br') as 'Realizado_ano'
 	                    , FORMAT(0, 'C', 'pt-br')  as 'Variacao_em_real_ano'
 	                    , FORMAT(0, 'N', 'pt-br') + '%'  as 'Variacao_em_perc_ano'
+                        , SubSum
+                        , Dummy
+                        {_campos_contas_formula}
+                        {_campos_operacao_formula}
 
                     FROM [dbo].[OFRC] tb0 
                     WHERE tb0.[TemplateId] = '{_modelo}'      -- modelo financeiro		  
-                    GROUP BY tb0.IndentChar, tb0.Name, tb0.VisOrder, tb0.CatId , tb0.FatherNum
                     ORDER BY tb0.[VisOrder]";
 
                 dt.ExecuteQuery(sql);
@@ -858,6 +883,7 @@ namespace ITOneRelatorioDemonstracao
                 oColumns.Item("fathernum").DataBind.Bind(dt.UniqueID, "fathernum");
                 oColumns.Item("varmes").DataBind.Bind(dt.UniqueID, "varmes");
                 oColumns.Item("varano").DataBind.Bind(dt.UniqueID, "varano");
+                oColumns.Item("dummy").DataBind.Bind(dt.UniqueID, "Dummy");
 
                 SBOApplication.RemoveWindowsMessage(SAPbouiCOM.BoWindowsMessageType.bo_WM_TIMER, true);
 
@@ -881,8 +907,6 @@ namespace ITOneRelatorioDemonstracao
                     grupo.VarMesReal = grupo.VariacaoEmReal(grupo.TotalOrcadoMes, grupo.TotalRealizadoMes);
                     grupo.VarAnoReal = grupo.VariacaoEmReal(grupo.TotalOrcadoAno, grupo.TotalRealizadoAno);
 
-                    grupo.VarMesPerc = grupo.VariacaoEmPercentual(grupo.TotalOrcadoMes, grupo.TotalRealizadoMes);
-                    grupo.VarAnoPerc = grupo.VariacaoEmPercentual(grupo.TotalOrcadoAno, grupo.TotalRealizadoAno);
                     grupo.RowInDataSource = i;
 
                     if (!catid_grupo_conta.ContainsKey(catID))
@@ -894,11 +918,13 @@ namespace ITOneRelatorioDemonstracao
                         catid_grupo_conta[catID].RowInDataSource = i;
                     }
 
+                    // guardando quais formulas serão aplicadas na conta corrente
+                    grupo.OrganizarFormulas(dt, i);
+
                     if (fatherNum == 0)
                     {
                         continue;
                     }
-
 
                     if (!catid_grupo_conta.ContainsKey(fatherNum))
                     {
@@ -921,6 +947,11 @@ namespace ITOneRelatorioDemonstracao
                 {
                     Dialogs.Success($"Criando totalizadores... {c} de {catid_grupo_conta.Count}");
                     var conta = catIDConta.Value;
+
+                    AplicadorDeFormulas.Aplicar(conta, catid_grupo_conta);
+
+                    conta.VarMesPerc = conta.VariacaoEmPercentual(conta.TotalOrcadoMes, conta.TotalRealizadoMes);
+                    conta.VarAnoPerc = conta.VariacaoEmPercentual(conta.TotalOrcadoAno, conta.TotalRealizadoAno);
 
                     dt.SetValue("Orcado_mes", conta.RowInDataSource, FormataDoubleParaMoeda(conta.TotalOrcadoMes));
                     dt.SetValue("Realizado_mes", conta.RowInDataSource, FormataDoubleParaMoeda(conta.TotalRealizadoMes));
@@ -976,6 +1007,11 @@ namespace ITOneRelatorioDemonstracao
 
                     int corPercAno = GetColor(variacao_perc_ano);
                     mtx.CommonSetting.SetCellFontColor(i, 10, corPercAno);
+
+                    if(mtx.GetCellSpecific("dummy", i).Value == "Y")
+                    {
+                        mtx.DeleteRow(i);
+                    }
                 }
 
                 SBOApplication.RemoveWindowsMessage(SAPbouiCOM.BoWindowsMessageType.bo_WM_TIMER, true);

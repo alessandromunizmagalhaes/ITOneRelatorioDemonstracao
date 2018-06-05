@@ -1,4 +1,6 @@
-﻿namespace ITOneRelatorioDemonstracao
+﻿using System.Collections.Generic;
+
+namespace ITOneRelatorioDemonstracao
 {
     public class GrupoConta
     {
@@ -33,6 +35,29 @@
             }
         }
 
+        public List<Formula> Formulas { get; } = new List<Formula>() { };
+
+        public double VariacaoEmReal(double totalOrcado, double totalRealizado)
+        {
+            if (totalRealizado < 0)
+            {
+                return ((totalRealizado - totalOrcado) * -1);
+            }
+            else
+            {
+                return totalOrcado - totalRealizado;
+            }
+        }
+
+        public double VariacaoEmPercentual(double totalOrcado, double totalRealizado)
+        {
+            if (totalOrcado == 0)
+                return 0.0;
+
+            var variacao = VariacaoEmReal(totalOrcado, totalRealizado);
+            return ((variacao * 100) / totalOrcado);
+        }
+
         public static GrupoContaFolha Clone(GrupoConta from, int catID)
         {
             return new GrupoContaFolha(catID)
@@ -45,9 +70,6 @@
                 TotalOrcadoAno = from.TotalOrcadoAno,
                 TotalRealizadoAno = from.TotalRealizadoAno,
                 VarAnoReal = from.VarAnoReal,
-
-                VarMesPerc = ((GrupoContaFolha)from).VariacaoEmPercentual(from.TotalOrcadoMes, from.TotalRealizadoMes),
-                VarAnoPerc = ((GrupoContaFolha)from).VariacaoEmPercentual(from.TotalOrcadoAno, from.TotalRealizadoAno)
 
             };
         }
@@ -63,10 +85,7 @@
 
                 TotalOrcadoAno = grupoFilho.TotalOrcadoAno + grupoPai.TotalOrcadoAno,
                 TotalRealizadoAno = grupoFilho.TotalRealizadoAno + grupoPai.TotalRealizadoAno,
-                VarAnoReal = grupoFilho.VarAnoReal + grupoPai.VarAnoReal,
-
-                VarMesPerc = ((GrupoContaFolha)grupoPai).VariacaoEmPercentual(grupoFilho.TotalOrcadoMes + grupoPai.TotalOrcadoMes, grupoFilho.TotalRealizadoMes + grupoPai.TotalRealizadoMes),
-                VarAnoPerc = ((GrupoContaFolha)grupoPai).VariacaoEmPercentual(grupoFilho.TotalOrcadoAno + grupoPai.TotalOrcadoAno, grupoFilho.TotalRealizadoAno + grupoPai.TotalRealizadoAno)
+                VarAnoReal = grupoFilho.VarAnoReal + grupoPai.VarAnoReal
             };
         }
     }
